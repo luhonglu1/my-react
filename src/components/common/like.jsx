@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 // input liked: boolean
 // output: onclick
@@ -23,18 +23,11 @@ import React, { Component } from 'react'
 // export default Like
 
 const Like = (props) => {
-  let classes = 'fa fa-heart'
+  let classes = 'clickable fa fa-heart'
   if (!props.liked) {
     classes += '-o'
   }
-  return (
-    <i
-      onClick={props.onClick}
-      style={{ cursor: 'pointer' }}
-      className={classes}
-      aria-hidden="true"
-    ></i>
-  )
+  return <i onClick={props.onClick} className={classes} aria-hidden="true"></i>
 }
 
 export default Like
