@@ -16,8 +16,14 @@ class App extends Component {
         <NavBar />
         <div className="content">
           <Switch>
-            <Route path="/products" component={Products}></Route>
-            <Route path="/posts" component={Posts}></Route>
+            <Route path="/products/:id" component={ProductDetails}></Route>
+            <Route
+              path="/products"
+              render={(props) => (
+                <Products sortBy="newset" {...props}></Products>
+              )}
+            ></Route>
+            <Route path="/posts/:year?/:month?" component={Posts}></Route>
             <Route path="/admin" component={Dashboard}></Route>
             <Route path="/" component={Home}></Route>
           </Switch>
