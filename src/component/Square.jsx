@@ -1,10 +1,17 @@
 import React from 'react'
+import { Consumer } from '../App.js'
 
 const Square = ({ value, doClick }) => {
   return (
-    <button className="square" onClick={doClick}>
-      {value}
-    </button>
+    <Consumer>
+      {(data) => {
+        return (
+          <button className="square" onClick={doClick}>
+            {value}
+          </button>
+        )
+      }}
+    </Consumer>
   )
 }
 

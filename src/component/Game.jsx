@@ -28,7 +28,7 @@ class Game extends Component {
   }
 
   handleStepClick(move) {
-    let backList = this.state.history.slice(move)
+    let backList = this.state.history.slice(-move - 1)
     if (!move) {
       backList = [this.state.history[this.state.history.length - 1]]
     }
