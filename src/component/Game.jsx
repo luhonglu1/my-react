@@ -15,6 +15,11 @@ class Game extends Component {
     activeValue: 'O',
   }
 
+  componentDidUpdate(preProps, preState) {
+    console.log(this.state.activeValue)
+    console.log(preState.activeValue)
+  }
+
   handleSquareClick(idx, idx2) {
     let historyCopy = this.state.history
     let firstArr = JSON.parse(JSON.stringify(historyCopy[0]))
