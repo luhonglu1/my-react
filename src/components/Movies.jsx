@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
+
+import { Link } from 'react-router-dom'
 import Pagination from './common/pagination'
 import ListGroup from './common/listGroup'
 import MoviesTable from './moviesTable'
+import SearchBox from './common/searchBox'
+
 import { getMovies } from '../services/fakeMovieService.js'
 import { getGenres } from '../services/fakeGenreService.js'
 import { paginate } from './utils/pagination.js'
-import _ from 'lodash'
 
 class Movies extends Component {
   state = {
@@ -14,7 +18,8 @@ class Movies extends Component {
     pageSize: 4, // 分页规格
     currentPage: 1, // 当前页
     sortColumn: { path: 'title', order: 'asc' },
-    // selectedGenre: {}, // 当前分类
+    searchQuery: '', // 搜索字符串
+    selectedGenre: null, // 当前分类
   }
 
   componentDidMount() {
@@ -43,11 +48,16 @@ class Movies extends Component {
   }
 
   handleGenreSelect = (genre) => {
-    this.setState({ selectedGenre: genre, currentPage: 1 })
+    this.setState({ selectedGenre: genre, currentPage: 1, searchQuery: '' })
   }
 
   handleSort = (sortColumn) => {
     this.setState({ sortColumn })
+  }
+
+  handleSearch = (query) => {
+    console.log('handle search')
+    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 })
   }
 
   getPageData = () => {
@@ -57,11 +67,21 @@ class Movies extends Component {
       movies: allMovies,
       selectedGenre,
       sortColumn,
+      searchQuery,
     } = this.state
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
-        : allMovies
+
+    let filtered = allMovies
+    if (searchQuery) {
+      filtered = filtered.filter((m) => {
+        // return m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+        return m.title.toLowerCase().includes(searchQuery.toLowerCase())
+      })
+    } else {
+      filtered =
+        selectedGenre && selectedGenre._id
+          ? filtered.filter((m) => m.genre._id === selectedGenre._id)
+          : filtered
+    }
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order])
 
@@ -79,7 +99,7 @@ class Movies extends Component {
       sortColumn,
     } = this.state
 
-    const { totalCount, data: movies } = this.getPageData()
+    const { totalCount, data: movies, searchQuery } = this.getPageData()
 
     if (count === 0) return <p>There are no movies in the database.</p>
 
@@ -93,7 +113,18 @@ class Movies extends Component {
           ></ListGroup>
         </div>
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            New Movie
+          </Link>
           <p>Showing {totalCount} movies in the database.</p>
+          <SearchBox
+            value={searchQuery}
+            onChange={this.handleSearch}
+          ></SearchBox>
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
